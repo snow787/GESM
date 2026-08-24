@@ -1,0 +1,34 @@
+{
+  "topics": [
+    { "id": "home", "name": "Home" },
+    { "id": "homework", "name": "Homework Help" },
+    { "id": "buzz", "name": "School Buzz" },
+    { "id": "clubs", "name": "Clubs & Activities" },
+    { "id": "sports", "name": "Sports" },
+    { "id": "cafeteria", "name": "Cafeteria" },
+    { "id": "voices", "name": "Voices" }
+  ],
+  "articles": [
+    {
+      "id": "hw1",
+      "topic": "homework",
+      "eyebrow": "Study Tip",
+      "featured": true,
+      "homeFeatured": false,
+      "headline": "The Five-Minute Rule Beats Procrastination, Students Say",
+      "dek": "Can’t make yourself start? Commit to five minutes and see what actually happens.",
+      "author": "Maya Chen",
+      "read": "3 min",
+      "body": [
+        "Ask around and you’ll hear the same trick from students who’ve stopped dreading their assignments: promise yourself just five minutes. Not the whole worksheet, not the whole essay — five minutes, with permission to stop after.",
+        "The logic is simple. Starting is almost always harder than continuing, and a five-minute promise is small enough that it doesn’t trigger the usual wave of dread. Most students who try it report the same thing: once the five minutes are up, they keep going anyway.",
+        "It won’t make homework fun. But it turns a mountain into a doorway, and a doorway is a lot easier to walk through."
+      ],
+      "tips": [
+        "Set an actual timer for five minutes — no more.",
+        "Choose the smallest possible first step, not the hardest part.",
+        "If you stop at five minutes, that still counts as a win."
+      ]
+    }
+  ]
+}
