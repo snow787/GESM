@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GESM News</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 10px;
+    --ease: cubic-bezier(.4,0,.2,1);
+  }
+
+  html[data-theme="dark"] {
+    --bg: #0b0e14;
+    --surface: #131826;
+    --surface-2: #1a2032;
+    --text: #e8ecf4;
+    --muted: #8891a6;
+    --border: rgba(232,236,244,0.09);
+    --border-strong: rgba(232,236,244,0.18);
+    --accent-blue: #3b82f6;
+    --accent-yellow: #fbbf24;
+    --accent-orange: #fb7c3c;
+    --grad-end: #ffffff;
+    --shadow: 0 20px 50px rgba(0,0,0,0.45);
+  }
+
+  html[data-theme="light"] {
+    --bg: #faf7f0;
+    --surface: #ffffff;
+    --surface-2: #f1ece0;
+    --text: #1a1f2b;
+    --muted: #6b7280;
+    --border: rgba(26,31,43,0.09);
+    --border-strong: rgba(26,31,43,0.18);
+    --accent-blue: #2563eb;
+    --accent-yellow: #d97706;
+    --accent-orange: #ea580c;
+    --grad-end: #1a1f2b;
+    --shadow: 0 20px 50px rgba(26,31,43,0.14);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    transition: background-color .5s var(--ease), color .5s var(--ease);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; }
+
+  /* ---------- Header ---------- */
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(10px);
+    transition: background-color .5s var(--ease), border-color .5s var(--ease);
+  }
+
+  .header-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 1.5rem 2rem 1rem;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .masthead { text-align: center; }
+
+  .masthead-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: clamp(2.1rem, 5vw, 3.4rem);
+    letter-spacing: -0.02em;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-yellow), var(--accent-orange), var(--grad-end), var(--accent-blue));
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gradientShift 9s ease infinite;
+  }
+
+  @keyframes gradientShift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .masthead-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .72rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: .35rem;
+  }
+
+  .edition-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .75rem;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: .5rem;
+    white-space: nowrap;
+  }
+
+  .live-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent-orange);
+    box-shadow: 0 0 0 0 rgba(251,124,60,.6);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(251,124,60,.5); }
+    70% { box-shadow: 0 0 0 6px rgba(251,124,60,0); }
+    100% { box-shadow: 0 0 0 0 rgba(251,124,60,0); }
+  }
+
+  /* ---------- Theme toggle ---------- */
+  .theme-toggle {
+    justify-self: start;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .toggle-track {
+    width: 52px;
+    height: 28px;
+    border-radius: 999px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    display: flex;
+    align-items: center;
+    padding: 3px;
+    transition: background-color .5s var(--ease), border-color .5s var(--ease);
+  }
+
+  .toggle-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-orange));
+    position: relative;
+    transition: transform .45s var(--ease);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  html[data-theme="light"] .toggle-thumb { transform: translateX(24px); }
+
+  .toggle-thumb svg {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    color: #fff;
+    transition: opacity .35s var(--ease), transform .5s var(--ease);
+  }
+
+  .icon-moon { opacity: 1; transform: rotate(0deg); }
+  .icon-sun { opacity: 0; transform: rotate(-90deg); }
+  html[data-theme="light"] .icon-moon { opacity: 0; transform: rotate(90deg); }
+  html[data-theme="light"] .icon-sun { opacity: 1; transform: rotate(0deg); }
+
+  /* ---------- Topic nav ---------- */
+  .topic-nav {
+    max-width: 1180px;
+    margin: 0 auto;
+    display: flex;
+    gap: .5rem;
+    overflow-x: auto;
+    padding: 0 2rem 1.1rem;
+    scrollbar-width: none;
+  }
+  .topic-nav::-webkit-scrollbar { display: none; }
+
+  .topic-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .78rem;
+    letter-spacing: .02em;
+    padding: .5rem 1.05rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color .35s var(--ease), color .35s var(--ease), border-color .35s var(--ease);
+  }
+
+  .topic-pill:hover { border-color: var(--border-strong); color: var(--text); }
+
+  .topic-pill.active {
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-orange));
+    color: #fff;
+    border-color: transparent;
+  }
+
+  /* ---------- Main / grid ---------- */
+  main {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 5rem;
+  }
+
+  .fade-in { animation: fadeIn .5s var(--ease); }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hidden { display: none !important; }
+
+  .hero-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.75rem, 4vw, 3rem);
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    margin-bottom: 2.5rem;
+    transition: background-color .5s var(--ease), border-color .5s var(--ease), transform .3s var(--ease);
+  }
+  .hero-card:hover { transform: translateY(-3px); }
+
+  .hero-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-yellow), var(--accent-orange));
+  }
+
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .72rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent-orange);
+    font-weight: 500;
+  }
+
+  .hero-headline {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: clamp(1.6rem, 3.6vw, 2.7rem);
+    line-height: 1.08;
+    margin: .6rem 0 .8rem;
+    max-width: 34ch;
+  }
+
+  .hero-dek {
+    color: var(--muted);
+    font-size: 1.02rem;
+    max-width: 52ch;
+    line-height: 1.55;
+  }
+
+  .card-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .72rem;
+    color: var(--muted);
+    margin-top: 1.1rem;
+    display: flex;
+    gap: .6rem;
+  }
+
+  .sections-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2rem;
+  }
+
+  .section-header {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .74rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--accent-blue);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: .6rem;
+    margin-bottom: 1rem;
+    transition: border-color .5s var(--ease);
+  }
+
+  .card-list { display: flex; flex-direction: column; gap: .9rem; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.1rem 1.2rem;
+    cursor: pointer;
+    transition: background-color .5s var(--ease), border-color .35s var(--ease), transform .25s var(--ease), box-shadow .25s var(--ease);
+  }
+
+  .card:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent-blue);
+    box-shadow: var(--shadow);
+  }
+
+  .card-headline {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1.05rem;
+    line-height: 1.3;
+    margin: .35rem 0 .3rem;
+  }
+
+  .card-dek {
+    color: var(--muted);
+    font-size: .87rem;
+    line-height: 1.45;
+  }
+
+  /* ---------- Article view ---------- */
+  .article-view { max-width: 700px; margin: 0 auto; }
+
+  .back-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .8rem;
+    color: var(--muted);
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: .5rem 1rem;
+    cursor: pointer;
+    margin-bottom: 2rem;
+    transition: color .3s var(--ease), border-color .3s var(--ease);
+  }
+  .back-btn:hover { color: var(--text); border-color: var(--border-strong); }
+
+  .article-headline {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: clamp(2rem, 5vw, 2.9rem);
+    line-height: 1.08;
+    margin: .7rem 0 1rem;
+  }
+
+  .article-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .78rem;
+    color: var(--muted);
+    display: flex;
+    gap: .8rem;
+    padding-bottom: 1.6rem;
+    margin-bottom: 1.6rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .article-body p {
+    line-height: 1.75;
+    font-size: 1.03rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .tips-list {
+    background: var(--surface-2);
+    border-left: 4px solid var(--accent-orange);
+    border-radius: var(--radius-sm);
+    padding: 1.3rem 1.5rem;
+    margin: 1.6rem 0;
+    transition: background-color .5s var(--ease);
+  }
+
+  .tips-list p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .72rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--accent-orange);
+    margin-bottom: .7rem;
+  }
+
+  .tips-list ul { list-style: none; display: flex; flex-direction: column; gap: .55rem; }
+  .tips-list li {
+    font-size: .95rem;
+    line-height: 1.5;
+    padding-left: 1.4rem;
+    position: relative;
+  }
+  .tips-list li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--accent-blue);
+  }
+
+  footer {
+    text-align: center;
+    padding: 3rem 2rem 3.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .75rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    transition: border-color .5s var(--ease);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent-blue);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 640px) {
+    .header-inner { grid-template-columns: auto 1fr; }
+    .edition-meta { display: none; }
+    main { padding: 2rem 1.2rem 4rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .masthead-title { animation: none; background-position: 30% 50%; }
+    .live-dot { animation: none; }
+    * { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark and light mode">
+      <span class="toggle-track">
+        <span class="toggle-thumb">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </span>
+      </span>
+    </button>
+    <div class="masthead">
+      <h1 class="masthead-title">GESM News</h1>
+      <p class="masthead-tag">Student-run &middot; always developing</p>
+    </div>
+    <div class="edition-meta">
+      <span class="live-dot"></span>
+      <span id="dateDisplay"></span>
+      <span>&middot;</span>
+      <span>Vol. 12, No. 4</span>
+    </div>
+  </div>
+  <nav class="topic-nav" id="topicNav"></nav>
+</header>
+
+<main>
+  <section id="gridView"></section>
+  <section id="articleView" class="article-view hidden"></section>
+</main>
+
+<footer>GESM News &mdash; written, edited, and argued about by students.</footer>
+
+<script>
+  // ---------- Theme ----------
+  const html = document.documentElement;
+  document.getElementById('themeToggle').addEventListener('click', () => {
+    html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+  document.getElementById('dateDisplay').textContent = new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+
+  // ---------- Data ----------
+  const topics = [
+    { id: 'home', name: 'Home' },
+    { id: 'homework', name: 'Homework Help' },
+    { id: 'buzz', name: 'School Buzz' },
+    { id: 'clubs', name: 'Clubs & Activities' },
+    { id: 'sports', name: 'Sports' },
+    { id: 'cafeteria', name: 'Cafeteria' },
+    { id: 'voices', name: 'Voices' },
+  ];
+
+  const articles = [
+    // Homework Help
+    { id:'hw1', topic:'homework', eyebrow:'Study Tip', featured:true, homeFeatured:false,
+      headline:'The Five-Minute Rule Beats Procrastination, Students Say',
+      dek:'Can\u2019t make yourself start? Commit to five minutes and see what actually happens.',
+      author:'Maya Chen', read:'3 min',
+      body:[
+        'Ask around and you\u2019ll hear the same trick from students who\u2019ve stopped dreading their assignments: promise yourself just five minutes. Not the whole worksheet, not the whole essay \u2014 five minutes, with permission to stop after.',
+        'The logic is simple. Starting is almost always harder than continuing, and a five-minute promise is small enough that it doesn\u2019t trigger the usual wave of dread. Most students who try it report the same thing: once the five minutes are up, they keep going anyway.',
+        'It won\u2019t make homework fun. But it turns a mountain into a doorway, and a doorway is a lot easier to walk through.'
+      ],
+      tips:['Set an actual timer for five minutes \u2014 no more.', 'Choose the smallest possible first step, not the hardest part.', 'If you stop at five minutes, that still counts as a win.']
+    },
+    { id:'hw2', topic:'homework', eyebrow:'Time Management',
+      headline:'How to Actually Use a Planner (And Stick With It)',
+      dek:'Three habits that turn a blank planner into a system you trust.',
+      author:'Diego Alvarez', read:'4 min',
+      body:[
+        'Plenty of students own a planner. Fewer actually use one past the second week of school. The gap usually isn\u2019t motivation \u2014 it\u2019s that most planners get filled in once and never opened again.',
+        'Students who stick with it tend to do three things differently: they check the planner at the same time every day, they write tasks down the moment they\u2019re assigned instead of trying to remember them, and they cross things off by hand, which turns out to matter more than it should.'
+      ],
+      tips:['Pick one fixed check-in time, like right after dinner.', 'Write a task down the second it\u2019s assigned.', 'Physically cross items off \u2014 digital checkmarks don\u2019t feel the same.']
+    },
+    { id:'hw3', topic:'homework', eyebrow:'Subject Deep Dive',
+      headline:'Math Anxiety: Three Techniques That Actually Help',
+      dek:'Your brain isn\u2019t bad at math \u2014 it might just be stressed.',
+      author:'Priya Nair', read:'4 min',
+      body:[
+        'Math anxiety is real, and it isn\u2019t about ability. Under stress, the brain diverts energy away from working memory \u2014 the exact resource you need to hold a multi-step problem in your head. That\u2019s why a formula you know cold can suddenly feel out of reach during a test.',
+        'Teachers who work with anxious students point to a few things that consistently help: writing out worries for two minutes before a test to get them out of your head, working the easiest problems first to build momentum, and treating a wrong answer as data instead of a verdict on your intelligence.'
+      ],
+      tips:['Spend two minutes writing down what\u2019s worrying you before you start.', 'Do the easiest problems first to build momentum.', 'Treat a wrong answer as information, not a verdict.']
+    },
+    { id:'hw4', topic:'homework', eyebrow:'Tool of the Week',
+      headline:'The Pomodoro Method, Explained by Students Who Use It',
+      dek:'25 minutes on, 5 minutes off \u2014 here\u2019s why it actually works.',
+      author:'Jordan Lee', read:'3 min',
+      body:[
+        'The Pomodoro method is almost embarrassingly simple: work for 25 minutes, then take a 5-minute break, and repeat. What makes it effective isn\u2019t the timing itself \u2014 it\u2019s that the break is scheduled, so your brain doesn\u2019t have to fight the urge to check your phone. It just has to wait.',
+        'Students who use it say the real benefit shows up on long assignments. Instead of one dreaded three-hour block, it becomes six manageable sprints with a guaranteed rest in between.'
+      ],
+      tips:['Use an actual timer, not a rough guess.', 'During breaks, stand up \u2014 don\u2019t open your phone.', 'After four rounds, take a longer 15-20 minute break.']
+    },
+
+    // School Buzz
+    { id:'bz1', topic:'buzz', eyebrow:'Developing', featured:true, homeFeatured:true,
+      headline:'Spring Fundraiser Sets New School Record',
+      dek:'The student council\u2019s bake-and-build sale raised more than any fundraiser in school history.',
+      author:'Ellie Park', read:'3 min',
+      body:[
+        'This year\u2019s spring fundraiser didn\u2019t just meet its goal \u2014 it blew past it. Between the bake sale tables and the build-a-birdhouse booth, student council reported a total that beats last year\u2019s record by a wide margin.',
+        'Organizers credit the early planning: booths were assigned by grade level a full month in advance, which meant less last-minute scrambling and more actual selling on the day. Proceeds will go toward new library seating, chosen by student vote last semester.'
+      ]
+    },
+    { id:'bz2', topic:'buzz', eyebrow:'Just In',
+      headline:'New Bike Racks Installed Outside the Gym',
+      dek:'Facilities added the racks after students raised the issue at last month\u2019s town hall.',
+      author:'Sam Okafor', read:'2 min',
+      body:[
+        'Three new bike racks now sit outside the gym entrance, replacing the single overcrowded rack that\u2019s been there since last year. The change came directly out of last month\u2019s student town hall, where several riders flagged the shortage.',
+        'Facilities staff say it took less time than expected \u2014 the racks were already sitting in storage, waiting for a green light.'
+      ]
+    },
+    { id:'bz3', topic:'buzz', eyebrow:'Announcement',
+      headline:'Talent Show Auditions Open This Friday',
+      dek:'Sign-up sheets go up outside the auditorium this week.',
+      author:'Maya Chen', read:'2 min',
+      body:[
+        'Auditions for this year\u2019s talent show open Friday, with sign-up sheets posted outside the auditorium starting Monday morning. Acts get a strict three-minute window, and last year\u2019s overflow crowd means organizers are asking students to arrive early.'
+      ]
+    },
+    { id:'bz4', topic:'buzz', eyebrow:'Just In',
+      headline:'Library Extends Hours During Exam Week',
+      dek:'The library will stay open an extra hour each afternoon through exam week.',
+      author:'Diego Alvarez', read:'2 min',
+      body:[
+        'The library will stay open until 5 p.m. instead of 4 p.m. throughout exam week, after last semester\u2019s survey showed the 4 p.m. closing time was the single most requested change from upperclassmen.'
+      ]
+    },
+
+    // Clubs & Activities
+    { id:'cl1', topic:'clubs', eyebrow:'Club Spotlight', featured:true,
+      headline:'Robotics Club Heads to Regional Qualifier',
+      dek:'After a redesign three weeks before deadline, the team\u2019s bot finally passed every test run.',
+      author:'Priya Nair', read:'4 min',
+      body:[
+        'The robotics club is headed to regionals after a late scramble to redesign their bot\u2019s arm mechanism, which kept jamming during early test runs. With three weeks left before the deadline, the team scrapped the original design and rebuilt it from scratch.',
+        'It worked. The rebuilt arm passed every trial run since, and the team leaves for regionals next month.'
+      ]
+    },
+    { id:'cl2', topic:'clubs', eyebrow:'New This Year',
+      headline:'Garden Club Plants Its First Fall Bulbs',
+      dek:'The newly formed club got its hands in the dirt behind the science wing.',
+      author:'Jordan Lee', read:'2 min',
+      body:[
+        'Garden club, formed just this fall, planted its first round of bulbs in the bed behind the science wing this week. Members are hoping for a spring bloom in time for the last week of school.'
+      ]
+    },
+    { id:'cl3', topic:'clubs', eyebrow:'Meeting Times',
+      headline:'Book Club Moves to Thursday Afternoons',
+      dek:'The schedule change is meant to avoid conflicts with after-school sports.',
+      author:'Ellie Park', read:'2 min',
+      body:[
+        'Book club is shifting its weekly meeting from Tuesday to Thursday afternoons, a change aimed at reducing conflicts with fall sports practice. The club\u2019s current pick, voted on last week, is its spookiest read of the year so far.'
+      ]
+    },
+    { id:'cl4', topic:'clubs', eyebrow:'Club Spotlight',
+      headline:'Chess Club Welcomes Beginners With Open Board Nights',
+      dek:'No experience required \u2014 just show up and someone will teach you the moves.',
+      author:'Sam Okafor', read:'2 min',
+      body:[
+        'Chess club has added a weekly \u201copen board\u201d night specifically for students who\u2019ve never played competitively. Veteran members are paired with newcomers, and the club says the format has roughly doubled attendance since it started.'
+      ]
+    },
+
+    // Sports
+    { id:'sp1', topic:'sports', eyebrow:'Game Recap', featured:true,
+      headline:'Soccer Team Wins Nail-Biter in Overtime',
+      dek:'A golden-goal strike in the final minute of overtime sealed the win.',
+      author:'Sam Okafor', read:'3 min',
+      body:[
+        'The soccer team edged out a tense overtime win Thursday night, scoring the golden goal with less than a minute on the clock. The match had been tied since the second half, with both teams trading missed chances until the final sprint.',
+        'The win moves the team into second place in the division standings.'
+      ]
+    },
+    { id:'sp2', topic:'sports', eyebrow:'Standings',
+      headline:'Volleyball Win Streak Reaches Five Games',
+      dek:'The team hasn\u2019t dropped a set since the start of the streak.',
+      author:'Ellie Park', read:'2 min',
+      body:[
+        'Volleyball extended its win streak to five games this week, and hasn\u2019t lost a single set since the run began. Coaches point to a reworked rotation as the turning point.'
+      ]
+    },
+    { id:'sp3', topic:'sports', eyebrow:'Athlete of the Week',
+      headline:'Cross Country Runner Posts Season-Best Time',
+      dek:'A personal record by twelve seconds moved her into the top five regionally.',
+      author:'Maya Chen', read:'2 min',
+      body:[
+        'A season-best time by twelve seconds this week put the junior runner into the top five in regional rankings. She credits the improvement to a change in pacing strategy rather than added mileage.'
+      ]
+    },
+    { id:'sp4', topic:'sports', eyebrow:'Game Recap',
+      headline:'Basketball Drops Close One on the Road',
+      dek:'A missed free throw in the final seconds decided a two-point loss.',
+      author:'Diego Alvarez', read:'2 min',
+      body:[
+        'Basketball fell just short on the road this week, losing by two points after a missed free throw in the closing seconds. The team returns home next week looking to bounce back.'
+      ]
+    },
+
+    // Cafeteria
+    { id:'cf1', topic:'cafeteria', eyebrow:'Menu Watch', featured:true,
+      headline:'Taco Tuesday Returns With a New Salsa Bar',
+      dek:'Three heat levels, one very popular mango salsa.',
+      author:'Jordan Lee', read:'2 min',
+      body:[
+        'Taco Tuesday is back on the menu after a semester off, this time with a self-serve salsa bar offering three heat levels. Early reports from the lunch line suggest the mango salsa is already the runaway favorite.'
+      ]
+    },
+    { id:'cf2', topic:'cafeteria', eyebrow:'Lunch Line Intel',
+      headline:'Mystery Meat Mystery, Solved: It\u2019s Turkey',
+      dek:'Cafeteria staff confirm the long-running lunch-line rumor, once and for all.',
+      author:'Priya Nair', read:'2 min',
+      body:[
+        'After years of speculation, cafeteria staff have confirmed on the record: the infamous \u201cmystery meat\u201d is, and has always been, turkey. The confirmation follows repeated requests from this publication.'
+      ]
+    },
+    { id:'cf3', topic:'cafeteria', eyebrow:'Taste Test',
+      headline:'Students Rank Every Pizza Day This Year',
+      dek:'Pepperoni wins, but not by as much as you\u2019d think.',
+      author:'Sam Okafor', read:'3 min',
+      body:[
+        'An informal poll of lunch-period pizza days ranked pepperoni on top, but the margin over plain cheese was closer than expected. Buffalo chicken, introduced only this semester, already cracked the top three.'
+      ]
+    },
+    { id:'cf4', topic:'cafeteria', eyebrow:'Menu Watch',
+      headline:'Fruit Bar Adds Mango, Immediately Sells Out',
+      dek:'Staff say they\u2019re doubling the order for next week.',
+      author:'Ellie Park', read:'2 min',
+      body:[
+        'The cafeteria\u2019s fruit bar added mango this week and sold out before second lunch even started. Staff say they\u2019re doubling next week\u2019s order to keep up.'
+      ]
+    },
+
+    // Voices
+    { id:'vc1', topic:'voices', eyebrow:'Opinion', featured:true,
+      headline:'Should Homework Count Toward Final Grades?',
+      dek:'A student argues that grading homework punishes kids for practicing, not for failing to learn.',
+      author:'Maya Chen', read:'4 min',
+      body:[
+        'Homework is supposed to be practice. But when it\u2019s graded like a test, it stops working like one. Students start optimizing for a completed page instead of actual understanding \u2014 copying answers, guessing, anything to avoid the grade hit.',
+        'If homework counted for feedback instead of points, students could actually afford to get things wrong while they\u2019re still learning, which is the entire point of practice in the first place.'
+      ]
+    },
+    { id:'vc2', topic:'voices', eyebrow:'Debate',
+      headline:'Longer Lunch Periods Would Help Everyone Focus',
+      dek:'Twenty-two minutes isn\u2019t enough time to eat, let alone decompress.',
+      author:'Diego Alvarez', read:'3 min',
+      body:[
+        'Between the line, the walk to a table, and actually eating, most students get less than fifteen minutes to sit down. A slightly longer lunch period wouldn\u2019t just mean better meals \u2014 it would mean students walk into afternoon classes less frazzled.'
+      ]
+    },
+    { id:'vc3', topic:'voices', eyebrow:'Letter to the Editor',
+      headline:'Thank You to the Custodial Staff',
+      dek:'A reader writes in with appreciation that doesn\u2019t get said often enough.',
+      author:'A Reader', read:'1 min',
+      body:[
+        'I wanted to write in and say thank you to the custodial staff, who keep this building running and rarely get thanked for it. Small things \u2014 a spill cleaned up fast, a broken locker fixed the same day \u2014 add up more than people realize.'
+      ]
+    },
+    { id:'vc4', topic:'voices', eyebrow:'Opinion',
+      headline:'Why Study Halls Should Stay Silent',
+      dek:'An argument for keeping one quiet room in a very loud building.',
+      author:'Jordan Lee', read:'3 min',
+      body:[
+        'Study hall is one of the only unscheduled hours in the day, which makes it valuable \u2014 but only if it\u2019s actually quiet. Once a room starts allowing conversation, it stops being useful for the students who came there specifically to escape noise.'
+      ]
+    },
+  ];
+
+  const byId = id => articles.find(a => a.id === id);
+
+  // ---------- Nav rendering ----------
+  const navEl = document.getElementById('topicNav');
+  let activeTopic = 'home';
+
+  function renderNav() {
+    navEl.innerHTML = topics.map(t =>
+      `<button class="topic-pill ${t.id === activeTopic ? 'active' : ''}" data-topic="${t.id}">${t.name}</button>`
+    ).join('');
+    navEl.querySelectorAll('.topic-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeTopic = btn.dataset.topic;
+        renderNav();
+        renderGrid(activeTopic);
+        showGrid();
+      });
+    });
+  }
+
+  // ---------- Card templates ----------
+  function heroTemplate(a) {
+    return `
+      <article class="hero-card fade-in" data-id="${a.id}">
+        <p class="eyebrow">${a.eyebrow}</p>
+        <h2 class="hero-headline">${a.headline}</h2>
+        <p class="hero-dek">${a.dek}</p>
+        <div class="card-meta"><span>${a.author}</span><span>&middot;</span><span>${a.read} read</span></div>
+      </article>`;
+  }
+
+  function cardTemplate(a) {
+    return `
+      <div class="card" data-id="${a.id}">
+        <p class="eyebrow">${a.eyebrow}</p>
+        <h3 class="card-headline">${a.headline}</h3>
+        <p class="card-dek">${a.dek}</p>
+      </div>`;
+  }
+
+  function attachCardHandlers(container) {
+    container.querySelectorAll('[data-id]').forEach(el => {
+      el.addEventListener('click', () => {
+        renderArticle(el.dataset.id);
+        showArticle();
+      });
+    });
+  }
+
+  // ---------- Grid rendering ----------
+  function renderGrid(topicId) {
+    const gridEl = document.getElementById('gridView');
+    let hero, sections;
+
+    if (topicId === 'home') {
+      hero = articles.find(a => a.homeFeatured);
+      sections = [
+        { label: 'Trending Now', ids: ['sp1', 'cl1', 'vc1'] },
+        { label: 'Around Campus', ids: ['bz2', 'cf1', 'cl3'] },
+        { label: 'From the Homework Desk', ids: ['hw1', 'hw4', 'hw2'] },
+      ].map(s => ({ label: s.label, items: s.ids.map(byId) }));
+    } else {
+      const topicArticles = articles.filter(a => a.topic === topicId);
+      hero = topicArticles.find(a => a.featured);
+      const rest = topicArticles.filter(a => a.id !== hero.id);
+      const groups = {};
+      rest.forEach(a => { (groups[a.eyebrow] = groups[a.eyebrow] || []).push(a); });
+      sections = Object.keys(groups).map(label => ({ label, items: groups[label] }));
+    }
+
+    gridEl.innerHTML = heroTemplate(hero) +
+      `<div class="sections-grid">` +
+      sections.map(s => `
+        <div class="section-block">
+          <p class="section-header">${s.label}</p>
+          <div class="card-list">${s.items.map(cardTemplate).join('')}</div>
+        </div>`).join('') +
+      `</div>`;
+
+    attachCardHandlers(gridEl);
+  }
+
+  // ---------- Article rendering ----------
+  function renderArticle(id) {
+    const a = byId(id);
+    const topicName = topics.find(t => t.id === a.topic).name;
+    const el = document.getElementById('articleView');
+    el.innerHTML = `
+      <button class="back-btn" id="backBtn">&larr; Back to ${activeTopic === 'home' ? 'Home' : topicName}</button>
+      <p class="eyebrow">${a.eyebrow}</p>
+      <h1 class="article-headline">${a.headline}</h1>
+      <div class="article-meta"><span>${a.author}</span><span>&middot;</span><span>${a.read} read</span><span>&middot;</span><span>${topicName}</span></div>
+      <div class="article-body">
+        ${a.body.map(p => `<p>${p}</p>`).join('')}
+        ${a.tips ? `<div class="tips-list"><p>Quick tips</p><ul>${a.tips.map(t => `<li>${t}</li>`).join('')}</ul></div>` : ''}
+      </div>`;
+    document.getElementById('backBtn').addEventListener('click', showGrid);
+  }
+
+  function showGrid() {
+    document.getElementById('gridView').classList.remove('hidden');
+    document.getElementById('articleView').classList.add('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function showArticle() {
+    document.getElementById('gridView').classList.add('hidden');
+    const view = document.getElementById('articleView');
+    view.classList.remove('hidden');
+    view.classList.add('fade-in');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ---------- Init ----------
+  renderNav();
+  renderGrid('home');
+</script>
+</body>
+</html>
